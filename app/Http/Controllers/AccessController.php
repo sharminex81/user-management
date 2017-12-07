@@ -1,4 +1,10 @@
 <?php
+/**
+ * Write something about the purpose of this file
+ *
+ * @author Sharmin Shanta <shantaex81@gmail.com>
+ * @url http://www.sharminshanta.com
+ */
 
 namespace App\Http\Controllers;
 

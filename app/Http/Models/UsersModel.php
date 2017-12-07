@@ -1,12 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: sharmin
- * Date: 12/8/17
- * Time: 1:12 AM
+ * Write something about the purpose of this file
+ *
+ * @author Sharmin Shanta <shantaex81@gmail.com>
+ * @url http://www.sharminshanta.com
  */
 
-//namespace App\Http\Models;
 namespace Besofty\Web\Accounts\Models;
 
 use Illuminate\Database\Eloquent\Model;
