@@ -12,9 +12,14 @@ class AccessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function login()
     {
-       // return view('welcome');
+        return view('auth.login');
+    }
+
+    public function signup()
+    {
+        return view('auth.signup');
     }
 
     /**

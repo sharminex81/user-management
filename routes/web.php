@@ -12,4 +12,7 @@
 */
 
 // Default Route (Login route)
-Route::get('/', 'AccessController@create');
+Route::get('/', 'AccessController@login');
+
+//Signup Route
+Route::get('/signup', 'AccessController@signup');
