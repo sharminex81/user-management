@@ -10,10 +10,28 @@ namespace Besofty\Web\Accounts\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class UsersModel
+ * @package Besofty\Web\Accounts\Models
+ */
 class UsersModel extends Model
 {
+    /**
+     * @var string
+     */
+    protected $table = "users";
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * Tesing purpose
+     */
     public function test()
     {
-        var_dump(3333); die();
+        var_dump(3333);
+        die();
     }
 }

@@ -11,6 +11,10 @@ namespace App\Http\Controllers;
 use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Http\Request;
 
+/**
+ * Class AccessController
+ * @package App\Http\Controllers
+ */
 class AccessController extends Controller
 {
     /**
@@ -23,6 +27,10 @@ class AccessController extends Controller
         return view('auth.login');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     *
+     */
     public function signup()
     {
         return view('auth.signup');
@@ -33,16 +41,16 @@ class AccessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function signupProcess()
     {
-        $usersModel = New UsersModel();
-        var_dump($usersModel->test());
+        $usersModel = new UsersModel();
+        var_dump($usersModel->getTable()); die();
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -53,7 +61,7 @@ class AccessController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -64,7 +72,7 @@ class AccessController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -75,8 +83,8 @@ class AccessController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -87,7 +95,7 @@ class AccessController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

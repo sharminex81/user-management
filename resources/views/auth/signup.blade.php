@@ -38,7 +38,7 @@
                     </div>
                     <div class="panel-body">
                         <p class="text-center pv">SIGNUP TO GET INSTANT ACCESS</p>
-                        <form role="form" data-parsley-validate="" novalidate="" class="mb-lg" role="form" method="POST" action="/signup">
+                        <form role="form" data-parsley-validate="" novalidate="" class="mb-lg" role="form" method="POST" action="/signup/process">
                             {{ csrf_field() }}
                             <div class="form-group has-feedback">
                                 <label for="signupFirstName" class="text-muted">First Name</label>
