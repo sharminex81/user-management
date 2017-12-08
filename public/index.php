@@ -49,6 +49,9 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 |
 */
 
+//Set default timezone
+date_default_timezone_set('UTC');
+
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
 $response = $kernel->handle(
