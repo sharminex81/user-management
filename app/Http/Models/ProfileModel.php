@@ -9,6 +9,7 @@
 namespace Besofty\Web\Accounts\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Validator;
 
 /**
  * Class ProfileModel

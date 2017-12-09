@@ -10,6 +10,9 @@ namespace App\Http\Controllers;
 
 use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Mockery\Exception;
+use Monolog\Logger;
 
 /**
  * Class AccessController
@@ -43,8 +46,8 @@ class AccessController extends Controller
      */
     public function signupProcess(Request $request)
     {
-        $profileData = $request->all()['profile'];
         $userData = $request->all()['user'];
+        $profileData = $request->all()['profile'];
         $postData = array_merge($profileData, $userData);
 
         //Set rules for the post data
@@ -68,11 +71,20 @@ class AccessController extends Controller
                 );
         }
 
-        return redirect('/');
 
-        /*$postData = $request->all();
-        $userModel = new UsersModel();
-        $recentUser = $userModel->createNewUser($postData);*/
+        try {
+            $userModel = new UsersModel();
+            $created = $userModel->createNewUser($request->all());
+            if ($created) {
+                Log::info('User has Created Successfuly', [$created]);
+                return redirect('/');
+            }
+        }catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::debug($exception->getTraceAsString());
+        }
+
+
 
         //$user = $userModel->details($recentUser['uuid'], true);
     }

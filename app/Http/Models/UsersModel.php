@@ -8,7 +8,9 @@
 
 namespace Besofty\Web\Accounts\Models;
 
+use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class UsersModel
@@ -94,8 +96,183 @@ class UsersModel extends Model
     /**
      * @param $postdata
      */
-    public function createNewUser($postdata)
+    public function createNewUser($data = [])
     {
-        return $postdata;
+        if (array_key_exists('user', $data) === false) {
+            Log::error('User Inforfation Required');
+        }
+        if (array_key_exists('profile', $data) === false) {
+            Log::error('Profile Inforfation Required');
+
+        }
+
+        $fullData = $data;
+
+        //Check required fields for user
+        $userDataRequiredFields = ['email_address', 'password'];
+        $missingField = [];
+
+        foreach ($userDataRequiredFields as $key => $value) {
+            if (array_key_exists($value, $fullData['user']) === false) {
+                $missingField[] = $value;
+            }
+        }
+
+        //Check required fields for user's profile
+        $profileRequiredFields = ['first_name', 'last_name'];
+        $missingField = [];
+
+        foreach ($profileRequiredFields as $key => $value) {
+            if (array_key_exists($value, $fullData['profile']) === false) {
+                $missingField[] = $value;
+            }
+        }
+
+        if (sizeof($missingField) > 0) {
+            throw new \Exception("Missing required fields ", $missingField);
+        }
+
+        try {
+            $user = $this->prepareNewUserData($fullData['user']);
+            $profile = $this->prepareNewUserProfileData($fullData['profile']);
+            $defaultRole = RolesModel::where('slug', 'general-user')->get();
+
+        } catch (\Exception $exception) {
+           throw $exception;
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
+
+        try {
+            //create user
+            $this->setRawAttributes($user);
+            $this->saveOrFail();
+
+            //Create profile for this user
+            $this->profile()->save(new ProfileModel($profile));
+
+            //Assign default role for this user
+            $this->role()->saveMany($defaultRole);
+
+            //User Details
+            $newUserDetails = $this->getDetails($this->uuid);
+
+            return $newUserDetails;
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function prepareNewUserData($data = [])
+    {
+        $message = [];
+
+        //Validate and sanitize email address
+        if (filter_var($data['email_address'], FILTER_VALIDATE_EMAIL) != false) {
+            $data['email_address'] = filter_var($data['email_address'], FILTER_SANITIZE_EMAIL);
+            $data['username'] = $data['email_address'];
+        } else {
+            Log::error('Invalid Email');
+        }
+
+        //Check whether this email address already exists
+        $isEmailAlreadyExists = $this->where('username', $data['email_address'])
+            ->orWhere('email_address', $data['email_address'])
+            ->select('email_address')
+            ->first();
+
+        if ($isEmailAlreadyExists) {
+            Log::error('Email Already Registered');
+        }
+
+        //Encrypt password and verify encryption
+        $encryptedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+
+        if (password_verify($data['password'], $encryptedPassword) != true) {
+            Log::error('Invalid Password');
+        }
+
+        $data['password'] = $encryptedPassword;
+
+        //If no UUID provided, generate one UUID
+        if (array_key_exists('uuid', $data) === false) {
+            $data['uuid'] = 1111111;
+        }
+
+        //Few default field value prepared
+        $data['email_address_verified'] = 0;
+
+        $data['email_address_verification_token'] = md5(md5(1111) . md5(serialize($data)));
+
+        if (array_key_exists('status', $data) === true) {
+            if ($data['status'] === 1 || $data['status'] === 0) {
+                $data['status'] = intval($data['status']);
+            }
+        } else {
+            $data['status'] = 1;
+        }
+
+        if (array_key_exists('is_visible', $data) === true) {
+            if ($data['is_visible'] === 1 || $data['is_visible'] === 0) {
+                $data['is_visible'] = intval($data['is_visible']);
+            }
+        } else {
+            $data['is_visible'] = 1;
+        }
+
+        if (array_key_exists('is_internal', $data) === true) {
+            unset($data['is_internal']);
+        }
+
+        $data['is_internal'] = 0;
+        $data['created'] = date('Y-m-d H:i:s');
+        $data['modified'] = $data['created'];
+        $data['last_seen'] = $data['created'];
+
+        $user = [];
+
+        foreach ($this->fillable as $item => $value) {
+            if (array_key_exists($value, $data) === true) {
+                $user[$value] = $data[$value];
+            }
+        }
+
+        return $user;
+    }
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function prepareNewUserProfileData($data = [])
+    {
+        $profile = [];
+        if (array_key_exists('account_id', $data) === false) {
+            unset($data['account_id']);
+        }
+        $profileModel = new ProfileModel();
+        /*$profileModel->profileFieldsValidation($data);*/
+        foreach ($profileModel->getfillable() as $item => $value) {
+            if (array_key_exists($value, $data) === true) {
+                $profile[$value] = $data[$value];
+            }
+        }
+        return $profile;
+    }
+
+    /**
+     * @param $uuid
+     * @return null
+     */
+    public function getDetails($uuid)
+    {
+        $details = null;
+        $details = $this->where('uuid', $uuid)
+            ->first();
+        return $details;
     }
 }
