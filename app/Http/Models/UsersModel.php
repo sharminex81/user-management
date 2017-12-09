@@ -8,9 +8,9 @@
 
 namespace Besofty\Web\Accounts\Models;
 
-use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use SharminShanta\PHPUtilities\Unique\UUID;
 
 /**
  * Class UsersModel
@@ -155,7 +155,7 @@ class UsersModel extends Model
             $this->role()->saveMany($defaultRole);
 
             //User Details
-            $newUserDetails = $this->getDetails($this->uuid);
+            $newUserDetails = $this->details($this->uuid);
 
             return $newUserDetails;
         } catch (\Exception $exception) {
@@ -200,13 +200,13 @@ class UsersModel extends Model
 
         //If no UUID provided, generate one UUID
         if (array_key_exists('uuid', $data) === false) {
-            $data['uuid'] = 1111111;
+            $data['uuid'] = UUID::generateUUID();
         }
 
         //Few default field value prepared
         $data['email_address_verified'] = 0;
 
-        $data['email_address_verification_token'] = md5(md5(1111) . md5(serialize($data)));
+        $data['email_address_verification_token'] = md5(md5(UUID::generateUUID()) . md5(serialize($data)));
 
         if (array_key_exists('status', $data) === true) {
             if ($data['status'] === 1 || $data['status'] === 0) {
@@ -273,6 +273,26 @@ class UsersModel extends Model
         $details = null;
         $details = $this->where('uuid', $uuid)
             ->first();
+        return $details;
+    }
+
+    /**
+     * @param $uuid
+     * @param bool $forceCacheRegeneration
+     * @return array
+     */
+    public function details($uuid, $forceCacheRegeneration = false)
+    {
+        $user = $this->where('uuid', $uuid)
+            ->with('profile')
+            ->first();
+
+        if (!$user) {
+            return [];
+        }
+
+        $details = $user->toArray();
+
         return $details;
     }
 }

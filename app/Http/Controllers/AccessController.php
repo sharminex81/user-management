@@ -74,9 +74,9 @@ class AccessController extends Controller
 
         try {
             $userModel = new UsersModel();
-            $created = $userModel->createNewUser($request->all());
-            if ($created) {
-                Log::info('User has Created Successfuly', [$created]);
+            $newUsercreated = $userModel->createNewUser($request->all());
+            if ($newUsercreated) {
+                Log::info('User has Created Successfuly', [$newUsercreated]);
                 return redirect('/');
             }
         }catch (Exception $exception) {
