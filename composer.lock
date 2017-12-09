@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f51b7360cecc57029f327e75c4ff2a90",
+    "content-hash": "3a473e5a8f69b9f7b05f5dab4f081d45",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1257,6 +1257,39 @@
                 "uuid"
             ],
             "time": "2017-09-22T20:46:04+00:00"
+        },
+        {
+            "name": "sharminex81/php-utilities",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sharminex81/php-utilities.git",
+                "reference": "50adf9a2c2580884652498636c1097ad05d595cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sharminex81/php-utilities/zipball/50adf9a2c2580884652498636c1097ad05d595cb",
+                "reference": "50adf9a2c2580884652498636c1097ad05d595cb",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SharminShanta\\PHPUtilities\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sharmin Shanta",
+                    "email": "shantaex81@gmail.com"
+                }
+            ],
+            "description": "Utilities library",
+            "time": "2017-12-08T21:37:57+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4089,6 +4122,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "sharminex81/php-utilities": 20,
         "barryvdh/laravel-ide-helper": 20
     },
     "prefer-stable": false,

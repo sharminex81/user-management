@@ -15,7 +15,8 @@
         "php": ">=7.0.0",
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
-        "laravel/tinker": "~1.0"
+        "laravel/tinker": "~1.0",
+        "sharminex81/php-utilities": "dev-master"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.3@dev",
