@@ -31,7 +31,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Besofty\\": "app/Http/Models/"
+            "Besofty\\Web\\Accounts\\Models\\": "app/Http/Models/"
         }
     },
     "autoload-dev": {
