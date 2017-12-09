@@ -43,9 +43,36 @@ class AccessController extends Controller
      */
     public function signupProcess(Request $request)
     {
-        $postData = $request->all();
+        $profileData = $request->all()['profile'];
+        $userData = $request->all()['user'];
+        $postData = array_merge($profileData, $userData);
+
+        //Set rules for the post data
+        $dataRules = [
+            'first_name' => 'required|max:15',
+            'last_name' => 'required|max:15',
+            'email_address' => 'required|email|unique:users',
+            'password' => 'required|min:6',
+            'password_confirmation' => 'required|min:6|same:password',
+        ];
+
+        //Check the valid post data
+        $validator = $this->userValidation($postData, $dataRules);
+
+        if ($validator->fails()) {
+            \Session::flash('error', 'Sorry, Something went wrong');
+            return redirect()->back()
+                ->withInput($request->all())
+                ->withErrors(
+                    $validator->messages()
+                );
+        }
+
+        return redirect('/');
+
+        /*$postData = $request->all();
         $userModel = new UsersModel();
-        $recentUser = $userModel->createNewUser($postData);
+        $recentUser = $userModel->createNewUser($postData);*/
 
         //$user = $userModel->details($recentUser['uuid'], true);
     }
@@ -104,5 +131,30 @@ class AccessController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * @param array $data
+     * @param array $rules
+     * @return \Illuminate\Validation\Validator
+     */
+    private function userValidation(array $data, array $rules)
+    {
+        $messages = [
+            'first_name.required' => 'First name is required',
+            'first_name.max' => 'First name cannot be more than 15 characters',
+            'last_name.required' => 'Last name is required',
+            'last_name.max' => 'Last name cannot be more than 15 characters',
+            'email_address.required' => 'Email is required',
+            'email_address.email' => 'Invalid email adderss',
+            'email_address.unique' => 'This email address already taken',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be at least 6 characters',
+            'password_confirmation.required' => 'Confirm password is required',
+            'password_confirmation.same' => 'Confirm password and password does not match',
+            'password_confirmation.min' => 'Password must be at least 6 characters',
+        ];
+
+        return \Validator::make($data, $rules, $messages);
     }
 }
