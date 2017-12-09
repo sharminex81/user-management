@@ -41,10 +41,13 @@ class AccessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function signupProcess()
+    public function signupProcess(Request $request)
     {
-        $usersModel = new UsersModel();
-        var_dump($usersModel->getTable()); die();
+        $postData = $request->all();
+        $userModel = new UsersModel();
+        $recentUser = $userModel->createNewUser($postData);
+
+        //$user = $userModel->details($recentUser['uuid'], true);
     }
 
     /**

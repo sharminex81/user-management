@@ -34,4 +34,12 @@ class UsersModel extends Model
         var_dump(3333);
         die();
     }
+
+    /**
+     * @param $postdata
+     */
+    public function createNewUser($postdata)
+    {
+        return $postdata;
+    }
 }
