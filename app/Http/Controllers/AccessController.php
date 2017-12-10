@@ -71,22 +71,19 @@ class AccessController extends Controller
                 );
         }
 
-
         try {
             $userModel = new UsersModel();
             $newUsercreated = $userModel->createNewUser($request->all());
             if ($newUsercreated) {
+                \Session::flash('success', "You have successfully registered");
                 Log::info('User has Created Successfuly', [$newUsercreated]);
                 return redirect('/');
             }
-        }catch (Exception $exception) {
+            \Session::flash('error', "Sorry something went wrong");
+        } catch (Exception $exception) {
             Log::error($exception->getMessage());
             Log::debug($exception->getTraceAsString());
         }
-
-
-
-        //$user = $userModel->details($recentUser['uuid'], true);
     }
 
     /**
