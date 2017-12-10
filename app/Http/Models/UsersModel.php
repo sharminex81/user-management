@@ -11,6 +11,7 @@ namespace Besofty\Web\Accounts\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use SharminShanta\PHPUtilities\Unique\UUID;
+use Mail;
 
 /**
  * Class UsersModel
@@ -170,6 +171,10 @@ class UsersModel extends Model
 
             //User Details
             $newUserDetails = $this->details($this->uuid);
+
+            //Send email to this user
+            $this->sendEmail($newUserDetails);
+
 
             return $newUserDetails;
         } catch (\Exception $exception) {
@@ -332,5 +337,25 @@ class UsersModel extends Model
         $details = $user->toArray();
 
         return $details;
+    }
+
+    /**
+     * @param array $info
+     */
+    public function sendEmail($info = [])
+    {
+        $data = [
+            'receiver' => $info['email_address'],
+            'receiver_name' => $info['profile']['first_name'] . ' ' . $info['profile']['last_name'],
+            'sender' => 'shantaex81@gmail.com',
+            'sender_name' => 'Sharmin Shanta',
+        ];
+
+        Mail::send( 'mail', $data, function( $message ) use ($data)
+        {
+            $message->to( $data['receiver'])
+                ->from( $data['sender'], $data['sender_name'])
+                ->subject( 'Welcome!');
+        });
     }
 }
