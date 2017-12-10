@@ -37,12 +37,41 @@
                         </a>
                     </div>
                     <div class="panel-body">
+                        <div class="text-center text-capitalize">
+                            @if(Session::has('success'))
+                                <div class="row">
+                                    <div class="alert alert-success alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        {{ Session::get('success') }}
+                                    </div>
+                                </div>
+                            @elseif(Session::has('error'))
+                                <div class="row">
+                                    <div class="alert alert-danger alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        {{ Session::get('error') }}
+                                    </div>
+                                </div>
+                            @elseif(Session::has('warning'))
+                                <div class="row">
+                                    <div class="alert alert-warning alert-dismissible" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        {{ Session::get('warning') }}
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                         <p class="text-center pv">SIGNUP TO GET INSTANT ACCESS</p>
-                        <form role="form" data-parsley-validate="" novalidate="" class="mb-lg" role="form" method="POST" action="/signup/process">
+                        <form role="form" data-parsley-validate="" novalidate="" class="mb-lg" role="form" method="POST"
+                              action="/signup/process">
                             {{ csrf_field() }}
                             <div class="form-group has-feedback">
                                 <label for="signupFirstName" class="text-muted">First Name</label>
-                                <input id="signupFirstName" type="text" placeholder="First Name" name="profile[first_name]"
+                                <input id="signupFirstName" type="text" placeholder="First Name"
+                                       name="profile[first_name]"
                                        autocomplete="off" required class="form-control">
                                 @if ($errors->has('first_name'))
                                     <span class="help-block">
@@ -64,7 +93,8 @@
 
                             <div class="form-group has-feedback">
                                 <label for="signupInputEmail1" class="text-muted">Email address</label>
-                                <input id="signupInputEmail1" type="email" placeholder="email" autocomplete="off" required
+                                <input id="signupInputEmail1" type="email" placeholder="email" autocomplete="off"
+                                       required
                                        class="form-control" name="user[email_address]">
                                 @if ($errors->has('email_address'))
                                     <span class="help-block">
@@ -75,7 +105,8 @@
 
                             <div class="form-group has-feedback">
                                 <label for="signupInputPassword1" class="text-muted">Password</label>
-                                <input id="signupInputPassword1" type="password" placeholder="Password" autocomplete="off" required
+                                <input id="signupInputPassword1" type="password" placeholder="Password"
+                                       autocomplete="off" required
                                        class="form-control" name="user[password]">
                                 @if ($errors->has('password'))
                                     <span class="help-block">
@@ -85,9 +116,10 @@
                             </div>
                             <div class="form-group has-feedback">
                                 <label for="signupInputRePassword1" class="text-muted">Retype Password</label>
-                                <input id="signupInputRePassword1" type="password" placeholder="Retype Password" autocomplete="off"
+                                <input id="signupInputRePassword1" type="password" placeholder="Retype Password"
+                                       autocomplete="off"
                                        required data-parsley-equalto="#signupInputPassword1" class="form-control"
-                                       name="user[password_confirmation]" >
+                                       name="user[password_confirmation]">
                                 @if ($errors->has('password_confirmation'))
                                     <span class="help-block">
                                         <strong class="text-danger">{{ $errors->first('password_confirmation') }}</strong>
