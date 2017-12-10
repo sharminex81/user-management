@@ -19,6 +19,24 @@ use SharminShanta\PHPUtilities\Unique\UUID;
 class UsersModel extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'uuid',
+        'username',
+        'email_address',
+        'password',
+        'is_internal',
+        'is_visible',
+        'status',
+        'last_seen',
+        'created',
+        'modified',
+    ];
+
+    /**
      * @var string
      */
     protected $table = "users";
@@ -27,15 +45,6 @@ class UsersModel extends Model
      * @var bool
      */
     public $timestamps = false;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'uuid', 'username', 'email_address', 'password'
-    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -54,7 +63,12 @@ class UsersModel extends Model
         'username' => 'string',
         'email_address' => 'string',
         'password' => 'string',
+        'is_internal' => 'string',
+        'is_visible' => 'string',
+        'status' => 'string',
+        'last_seen' => 'datetime',
         'created' => 'datetime',
+        'modified' => 'datetime',
     ];
 
     protected static $extendedRelations = [
@@ -101,9 +115,9 @@ class UsersModel extends Model
         if (array_key_exists('user', $data) === false) {
             Log::error('User Inforfation Required');
         }
+
         if (array_key_exists('profile', $data) === false) {
             Log::error('Profile Inforfation Required');
-
         }
 
         $fullData = $data;
@@ -129,7 +143,7 @@ class UsersModel extends Model
         }
 
         if (sizeof($missingField) > 0) {
-            throw new \Exception("Missing required fields ", $missingField);
+            Log::error('Missing required fields', ['Missing_field' => $missingField]);
         }
 
         try {
@@ -138,7 +152,7 @@ class UsersModel extends Model
             $defaultRole = RolesModel::where('slug', 'general-user')->get();
 
         } catch (\Exception $exception) {
-           throw $exception;
+            throw $exception;
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -204,9 +218,9 @@ class UsersModel extends Model
         }
 
         //Few default field value prepared
-        $data['email_address_verified'] = 0;
+        //$data['email_address_verified'] = 0;
 
-        $data['email_address_verification_token'] = md5(md5(UUID::generateUUID()) . md5(serialize($data)));
+        //$data['email_address_verification_token'] = md5(md5(UUID::generateUUID()) . md5(serialize($data)));
 
         if (array_key_exists('status', $data) === true) {
             if ($data['status'] === 1 || $data['status'] === 0) {
@@ -224,14 +238,30 @@ class UsersModel extends Model
             $data['is_visible'] = 1;
         }
 
-        if (array_key_exists('is_internal', $data) === true) {
-            unset($data['is_internal']);
+        /* if (array_key_exists('is_internal', $data) === true) {
+             unset($data['is_internal']);
+         }*/
+
+        if (array_key_exists('is_internal', $data) === false) {
+            $data['is_internal'] = 0;
         }
 
-        $data['is_internal'] = 0;
-        $data['created'] = date('Y-m-d H:i:s');
-        $data['modified'] = $data['created'];
-        $data['last_seen'] = $data['created'];
+        if (array_key_exists('created', $data) === false) {
+            $data['created'] = date('Y-m-d H:i:s');
+        }
+
+        if (array_key_exists('modified', $data) === false) {
+            $data['modified'] = $data['created'];
+        }
+
+        if (array_key_exists('last_seen', $data) === false) {
+            $data['last_seen'] = $data['created'];
+        }
+
+        //$data['is_internal'] = 0;
+        //$data['created'] = date('Y-m-d H:i:s');
+        //$data['modified'] = $data['created'];
+        //$data['last_seen'] = $data['created'];
 
         $user = [];
 
@@ -243,6 +273,7 @@ class UsersModel extends Model
 
         return $user;
     }
+
     /**
      * @param array $data
      *
@@ -254,13 +285,20 @@ class UsersModel extends Model
         if (array_key_exists('account_id', $data) === false) {
             unset($data['account_id']);
         }
+
+        if (array_key_exists('created', $data) === false) {
+            $data['created'] = date('Y-m-d H:i:s');
+        }
+
         $profileModel = new ProfileModel();
+
         /*$profileModel->profileFieldsValidation($data);*/
         foreach ($profileModel->getfillable() as $item => $value) {
             if (array_key_exists($value, $data) === true) {
                 $profile[$value] = $data[$value];
             }
         }
+
         return $profile;
     }
 
