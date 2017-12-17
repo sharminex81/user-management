@@ -11,8 +11,6 @@ namespace App\Http\Controllers;
 use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Mockery\Exception;
-use Monolog\Logger;
 
 /**
  * Class AccessController
@@ -73,14 +71,14 @@ class AccessController extends Controller
 
         try {
             $userModel = new UsersModel();
-            $newUsercreated = $userModel->createNewUser($request->all());
-            if ($newUsercreated) {
+            $newUserCreated = $userModel->createNewUser($request->all());
+            if ($newUserCreated) {
                 \Session::flash('success', "You have successfully registered");
-                Log::info('User has Created Successfuly', [$newUsercreated]);
+                Log::info('User has Created Successfully', ['new_user' => $newUserCreated]);
                 return redirect('/');
             }
             \Session::flash('error', "Sorry something went wrong");
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::debug($exception->getTraceAsString());
         }

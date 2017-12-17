@@ -351,7 +351,7 @@ class UsersModel extends Model
             'sender_name' => 'Sharmin Shanta',
         ];
 
-        Mail::send( 'mail', $data, function( $message ) use ($data)
+        Mail::send( 'emails.registration_mail', $data, function( $message ) use ($data)
         {
             $message->to( $data['receiver'])
                 ->from( $data['sender'], $data['sender_name'])
