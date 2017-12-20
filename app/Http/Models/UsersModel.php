@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use SharminShanta\PHPUtilities\Unique\UUID;
 use Mail;
-
+use SharminShanta\PHPUtilities\IP;
 /**
  * Class UsersModel
  * @package Besofty\Web\Accounts\Models
@@ -53,7 +53,7 @@ class UsersModel extends Model
      * @var array
      */
     protected $hidden = [
-        'password', 'password_token',
+        'password', 'password_token', 'account_verified_token'
     ];
 
     /**
@@ -349,13 +349,18 @@ class UsersModel extends Model
             'receiver_name' => $info['profile']['first_name'] . ' ' . $info['profile']['last_name'],
             'sender' => 'shantaex81@gmail.com',
             'sender_name' => 'Sharmin Shanta',
+            'siteUrl' => config('app.url'),
+            'link' => config('app.url') . '?action=confirm&?email=' . $info['email_address'] . '&uuid='. $info['uuid'],
+            'requestIP' => IP\VisitorIP::getIP()
         ];
 
-        Mail::send( 'emails.registration_mail', $data, function( $message ) use ($data)
-        {
-            $message->to( $data['receiver'])
-                ->from( $data['sender'], $data['sender_name'])
-                ->subject( 'Welcome!');
-        });
+        if ($data) {
+            Mail::send( 'emails.registration_mail', $data, function( $message ) use ($data)
+            {
+                $message->to( $data['receiver'])
+                    ->from( $data['sender'], $data['sender_name'])
+                    ->subject( 'Welcome!');
+            });
+        }
     }
 }
