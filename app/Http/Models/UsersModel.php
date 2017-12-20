@@ -232,7 +232,7 @@ class UsersModel extends Model
                 $data['status'] = intval($data['status']);
             }
         } else {
-            $data['status'] = 1;
+            $data['status'] = 0;
         }
 
         if (array_key_exists('is_visible', $data) === true) {
