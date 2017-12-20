@@ -23,8 +23,9 @@ class AccessController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login()
+    public function login(Request $request)
     {
+        $queryParams = $request->query();
         return view('auth.login');
     }
 

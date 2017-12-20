@@ -350,7 +350,7 @@ class UsersModel extends Model
             'sender' => 'shantaex81@gmail.com',
             'sender_name' => 'Sharmin Shanta',
             'siteUrl' => config('app.url'),
-            'link' => config('app.url') . '?action=confirm&?email=' . $info['email_address'] . '&uuid='. $info['uuid'],
+            'link' => config('app.url') . '?action=confirm&email=' . $info['email_address'] . '&uuid='. $info['uuid'],
             'requestIP' => IP\VisitorIP::getIP()
         ];
 
