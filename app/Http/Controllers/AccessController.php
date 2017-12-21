@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 
 /**
  * Class AccessController
@@ -41,7 +42,7 @@ class AccessController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function signupProcess(Request $request)
     {
@@ -62,7 +63,7 @@ class AccessController extends Controller
         $validator = $this->userValidation($postData, $dataRules);
 
         if ($validator->fails()) {
-            \Session::flash('error', 'Sorry, Something went wrong');
+            \Session::flash('error', 'Sorry, you\'ve provided invalid data');
             return redirect()->back()
                 ->withInput($request->all())
                 ->withErrors(
@@ -78,11 +79,12 @@ class AccessController extends Controller
                 Log::info('User has Created Successfully', ['new_user' => $newUserCreated]);
                 return redirect('/');
             }
-            \Session::flash('error', "Sorry something went wrong");
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::debug($exception->getTraceAsString());
         }
+
+        return Redirect::back()->with('error','Sorry, Something went wrong');
     }
 
     /**
