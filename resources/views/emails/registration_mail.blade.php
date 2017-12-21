@@ -4,7 +4,7 @@
 </p>
 
  <p>
-     Please go to {{ $link }} in order to complete this request.
+     Please go to <a href="{{ $link }}">{{ $link }}</a> in order to complete this request.
  </p>
 
 <p>

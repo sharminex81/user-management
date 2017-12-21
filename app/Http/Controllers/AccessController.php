@@ -12,6 +12,7 @@ use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Mockery\Exception;
 
 /**
  * Class AccessController
@@ -20,13 +21,38 @@ use Illuminate\Support\Facades\Redirect;
 class AccessController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function login(Request $request)
     {
-        $queryParams = $request->query();
+        try {
+            $queryParams = $request->query();
+
+            if (!empty($queryParams)) {
+                $usersModel = new UsersModel();
+                $userDetails = $usersModel->details($queryParams['uuid']);
+
+                if (!empty($userDetails)) {
+                    $accountVerified = (int)$userDetails['account_verified'];
+                    $status = (int)$userDetails['status'];
+
+                    if ($accountVerified == 0 && $status == 0) {
+                        $postData['account_verified'] = 1;
+                        $postData['status'] = 1;
+                        $userAccountVerifed = $usersModel->where('uuid', $userDetails['uuid'])->update($postData);
+                        if ($userAccountVerifed) {
+                            \Session::flash('success', "Please, login to our site");
+                            Log::info('User account has verified', ['user_uuid' => $userDetails['uuid']]);
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::debug($exception->getTraceAsString());
+        }
+
         return view('auth.login');
     }
 
@@ -75,7 +101,7 @@ class AccessController extends Controller
             $userModel = new UsersModel();
             $newUserCreated = $userModel->createNewUser($request->all());
             if ($newUserCreated) {
-                \Session::flash('success', "You have successfully registered");
+                \Session::flash('success', "A email has been send to your inbox. Check your inbox.");
                 Log::info('User has Created Successfully', ['new_user' => $newUserCreated]);
                 return redirect('/');
             }
