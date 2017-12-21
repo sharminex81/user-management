@@ -110,7 +110,7 @@ class AccessController extends Controller
             Log::debug($exception->getTraceAsString());
         }
 
-        return Redirect::back()->with('error','Sorry, Something went wrong');
+        return Redirect::back()->with('error', 'Sorry, Something went wrong');
     }
 
     /**
