@@ -15,8 +15,17 @@
 Route::get('/', 'Auth\LoginController@login');
 Route::post('/login', 'Auth\LoginController@loginProcess');
 
+/**
+ * Dashboard Route
+ * Middleware has stored in kernel.php (/app/Http/Middleware)
+ */
+Route::get('/dashboard', 'DashboardController@index')->middleware('auth');
+
 //Signup route
 Route::group(['prefix' => 'signup'], function () {
     Route::get('', 'AccessController@signup');
     Route::post('/process', 'AccessController@signupProcess');
 });
+
+//Logout Route
+Route::get('/logout', 'Auth\LoginController@logout');

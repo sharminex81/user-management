@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -79,6 +80,7 @@ class LoginController extends Controller
 
     /**
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function loginProcess(Request $request)
     {
@@ -90,6 +92,7 @@ class LoginController extends Controller
 
             if ($user != false) {
                 Log::info('User has successfully logged in ');
+                Session::put('authinfo', $user['uuid']);
                 return redirect('/dashboard');
             }
         } catch (\Exception $exception) {
@@ -99,5 +102,15 @@ class LoginController extends Controller
 
         Log::error('User\'s credential doesn\'t match');
         return Redirect::back()->with('error', 'Sorry, credential doesn\'t match');
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function logout(Request $request)
+    {
+        Session::invalidate();
+        return redirect('/');
     }
 }
