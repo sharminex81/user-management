@@ -87,18 +87,17 @@ class LoginController extends Controller
             $postData['email_address'] = filter_var($postData['email_address'], FILTER_SANITIZE_EMAIL);
             $usersModel = new UsersModel();
             $user = $usersModel->authValidation($postData['email_address'], $postData['password']);
-            var_dump($user); die();
 
-            /*if ($user) {
+            if ($user != false) {
                 Log::info('User has successfully logged in ');
                 return redirect('/dashboard');
-            } else {
-                Log::error('User\'s credential doesn\'t match');
-                return Redirect::back()->with('error', 'Sorry, credential doesn\'t match');
-            }*/
+            }
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());
             Log::debug($exception->getTraceAsString());
         }
+
+        Log::error('User\'s credential doesn\'t match');
+        return Redirect::back()->with('error', 'Sorry, credential doesn\'t match');
     }
 }
