@@ -309,18 +309,6 @@ class UsersModel extends Model
 
     /**
      * @param $uuid
-     * @return null
-     */
-    public function getDetails($uuid)
-    {
-        $details = null;
-        $details = $this->where('uuid', $uuid)
-            ->first();
-        return $details;
-    }
-
-    /**
-     * @param $uuid
      * @param bool $forceCacheRegeneration
      * @return array
      */
@@ -337,6 +325,40 @@ class UsersModel extends Model
         $details = $user->toArray();
 
         return $details;
+    }
+
+    public function authentication($postData)
+    {
+        $user = [];
+
+        if (filter_var($postData['email_address'], FILTER_VALIDATE_EMAIL) != false) {
+            $postData['email_address'] = filter_var($postData['email_address'], FILTER_SANITIZE_EMAIL);
+        } else {
+            Log::error('Invalid Email');
+        }
+
+        $encryptedPassword = password_hash($postData['password'], PASSWORD_BCRYPT);
+
+        if (password_verify($postData['password'], $encryptedPassword) != true) {
+            Log::error('Invalid Password');
+        }
+
+        $postData['password'] = $encryptedPassword;
+
+        try {
+            $user = $this->where('email_address', $postData['email_address'])
+                ->where('username', $postData['email_address'])
+                ->where('password', $postData['password'])
+                ->where('account_verified', 1)
+                ->where('status', 1)
+                ->first();
+            if ($user) {
+                return $user;
+            }
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
+        return false;
     }
 
     /**

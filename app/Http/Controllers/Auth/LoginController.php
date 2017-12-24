@@ -79,6 +79,6 @@ class LoginController extends Controller
 
     public function loginProcess()
     {
-        var_dump(111); die();
+        var_dump(config('app.user_role')); die();
     }
 }
