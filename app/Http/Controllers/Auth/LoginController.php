@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -35,5 +38,47 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function login(Request $request)
+    {
+        try {
+            $queryParams = $request->query();
+
+            if (!empty($queryParams)) {
+                $usersModel = new UsersModel();
+                $userDetails = $usersModel->details($queryParams['uuid']);
+
+                if (!empty($userDetails)) {
+                    $accountVerified = (int)$userDetails['account_verified'];
+                    $status = (int)$userDetails['status'];
+
+                    if ($accountVerified == 0 && $status == 0) {
+                        $postData['account_verified'] = 1;
+                        $postData['status'] = 1;
+                        $userAccountVerifed = $usersModel->where('uuid', $userDetails['uuid'])->update($postData);
+                        if ($userAccountVerifed) {
+                            \Session::flash('success', "Please, login to our site");
+                            Log::info('User account has verified', ['user_uuid' => $userDetails['uuid']]);
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::debug($exception->getTraceAsString());
+        }
+
+        return view('auth.login');
+    }
+
+
+    public function loginProcess()
+    {
+        var_dump(111); die();
     }
 }

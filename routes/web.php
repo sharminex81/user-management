@@ -12,7 +12,8 @@
 */
 
 // Default route (Login route)
-Route::get('/', 'AccessController@login');
+Route::get('/', 'Auth\LoginController@login');
+Route::post('/login', 'Auth\LoginController@loginProcess');
 
 //Signup route
 Route::group(['prefix' => 'signup'], function () {
