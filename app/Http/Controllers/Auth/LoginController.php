@@ -7,6 +7,7 @@ use Besofty\Web\Accounts\Models\UsersModel;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -76,9 +77,28 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-
-    public function loginProcess()
+    /**
+     * @param Request $request
+     */
+    public function loginProcess(Request $request)
     {
-        var_dump(config('app.user_role')); die();
+        try {
+            $postData = $request->all();
+            $postData['email_address'] = filter_var($postData['email_address'], FILTER_SANITIZE_EMAIL);
+            $usersModel = new UsersModel();
+            $user = $usersModel->authValidation($postData['email_address'], $postData['password']);
+            var_dump($user); die();
+
+            /*if ($user) {
+                Log::info('User has successfully logged in ');
+                return redirect('/dashboard');
+            } else {
+                Log::error('User\'s credential doesn\'t match');
+                return Redirect::back()->with('error', 'Sorry, credential doesn\'t match');
+            }*/
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+            Log::debug($exception->getTraceAsString());
+        }
     }
 }

@@ -327,38 +327,34 @@ class UsersModel extends Model
         return $details;
     }
 
-    public function authentication($postData)
+    /**
+     * @param $emailAddress
+     * @param $password
+     * @return array
+     */
+    public function authValidation($emailAddress, $password)
     {
-        $user = [];
+        $userAccount = $this->where('email_address', $emailAddress)
+            ->select('uuid', 'password', 'is_visible', 'status')
+            ->first();
 
-        if (filter_var($postData['email_address'], FILTER_VALIDATE_EMAIL) != false) {
-            $postData['email_address'] = filter_var($postData['email_address'], FILTER_SANITIZE_EMAIL);
-        } else {
-            Log::error('Invalid Email');
+        if (!$userAccount) {
+            Log::error('Invalid User');
         }
 
-        $encryptedPassword = password_hash($postData['password'], PASSWORD_BCRYPT);
-
-        if (password_verify($postData['password'], $encryptedPassword) != true) {
+        if (password_verify($password, $userAccount->password) === false) {
             Log::error('Invalid Password');
         }
 
-        $postData['password'] = $encryptedPassword;
-
-        try {
-            $user = $this->where('email_address', $postData['email_address'])
-                ->where('username', $postData['email_address'])
-                ->where('password', $postData['password'])
-                ->where('account_verified', 1)
-                ->where('status', 1)
-                ->first();
-            if ($user) {
-                return $user;
-            }
-        } catch (\Exception $exception) {
-            throw $exception;
+        if ($userAccount->is_visible == 0) {
+            Log::error('User is no longer exists');
         }
-        return false;
+
+        if ($userAccount->status != 1) {
+            Log::error('User has been blocked or suspended');
+        }
+
+        return $this->details($userAccount->uuid);
     }
 
     /**
