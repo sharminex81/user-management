@@ -125,6 +125,17 @@
                             </li>
                         </ul>
                     </li>
+                    <?php
+                        $authInfo = Session::has('authinfo');
+
+                        if ($authInfo == true) {
+                            $authUUID = Session::get('authinfo');
+                            $usersModel = new \Besofty\Web\Accounts\Models\UsersModel();
+                            $usersDetails = $usersModel->details($authUUID);
+                            $usersRoles = $usersModel->getRoles($usersDetails['uuid']);
+                        }
+
+                        ?>
                     <li class="dropdown dropdown-list">
                         <a href="#" data-toggle="dropdown">
                             <em class="icon-user"></em>
@@ -169,7 +180,7 @@
                                 </div>
                                 <div class="user-block-info">
                                     <span class="user-block-name">Hello, <a
-                                                href="#"> Shanta Shanta</a></span>
+                                                href="#"> {{ $usersDetails['profile']['first_name'] . " " . $usersDetails['profile']['last_name']}}</a></span>
                                     <span class="user-block-role">General User</span>
                                 </div>
                             </div>

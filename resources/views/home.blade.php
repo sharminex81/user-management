@@ -4,9 +4,6 @@
     <div class="row">
         <div class="col-lg-3 col-sm-6">
             <!-- START widget-->
-            {{--@if(Session::has('authinfo'))
-                {{Session::get('authinfo')}}
-            @endif--}}
             <div class="panel bg-info-light pt b0 widget">
                 <div class="ph">
                     <em class="icon-cloud-upload fa-lg pull-right"></em>

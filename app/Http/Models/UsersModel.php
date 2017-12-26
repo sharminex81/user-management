@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Log;
 use SharminShanta\PHPUtilities\Unique\UUID;
 use Mail;
 use SharminShanta\PHPUtilities\IP;
+
 /**
  * Class UsersModel
  * @package Besofty\Web\Accounts\Models
+ * @property int id
  */
 class UsersModel extends Model
 {
@@ -328,6 +330,39 @@ class UsersModel extends Model
     }
 
     /**
+     * @param $uuid
+     * @return mixed|null
+     */
+    public function getId($uuid)
+    {
+        $user = $this->details($uuid);
+
+        if ($user && is_array($user) && array_key_exists('id', $user)) {
+            return $user['id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $userUUID
+     * @param bool $forceCacheRegeneration
+     * @return array|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getRoles($userUUID, $forceCacheRegeneration = false)
+    {
+        $this->id = $this->getId($userUUID);
+        $roles = $this->role()->get();
+
+        if (!$roles || sizeof($roles) < 1) {
+            return [];
+        }
+
+        return $roles->toArray();
+
+    }
+
+    /**
      * @param $emailAddress
      * @param $password
      * @return array
@@ -372,16 +407,15 @@ class UsersModel extends Model
             'sender' => 'shantaex81@gmail.com',
             'sender_name' => 'Sharmin Shanta',
             'siteUrl' => config('app.url'),
-            'link' => config('app.url') . '?action=confirm&email=' . $info['email_address'] . '&uuid='. $info['uuid'],
+            'link' => config('app.url') . '?action=confirm&email=' . $info['email_address'] . '&uuid=' . $info['uuid'],
             'requestIP' => IP\VisitorIP::getIP()
         ];
 
         if ($data) {
-            Mail::send( 'emails.registration_mail', $data, function( $message ) use ($data)
-            {
-                $message->to( $data['receiver'])
-                    ->from( $data['sender'], $data['sender_name'])
-                    ->subject( 'Welcome!');
+            Mail::send('emails.registration_mail', $data, function ($message) use ($data) {
+                $message->to($data['receiver'])
+                    ->from($data['sender'], $data['sender_name'])
+                    ->subject('Welcome!');
             });
         }
     }
