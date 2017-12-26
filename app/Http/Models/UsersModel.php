@@ -419,4 +419,24 @@ class UsersModel extends Model
             });
         }
     }
+
+    /**
+     * @param $uuid
+     * @return array
+     */
+    public function getAuthInfo($uuid)
+    {
+        $user = [
+            'user_uuid' => $uuid,
+            'user_details' => $this->details($uuid),
+            'user_roles' => $this->getRoles($uuid),
+            'user_id' => $this->getId($uuid)
+        ];
+
+        if ($user && is_array($user)) {
+            return $user;
+        }
+
+        return [];
+    }
 }

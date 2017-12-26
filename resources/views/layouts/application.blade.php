@@ -126,16 +126,15 @@
                         </ul>
                     </li>
                     <?php
-                        $authInfo = Session::has('authinfo');
+                    $authInfo = Session::has('authinfo');
 
-                        if ($authInfo == true) {
-                            $authUUID = Session::get('authinfo');
-                            $usersModel = new \Besofty\Web\Accounts\Models\UsersModel();
-                            $usersDetails = $usersModel->details($authUUID);
-                            $usersRoles = $usersModel->getRoles($usersDetails['uuid']);
-                        }
+                    if ($authInfo == true) {
+                        $authUUID = Session::get('authinfo');
+                        $usersModel = new \Besofty\Web\Accounts\Models\UsersModel();
+                        $authInfo = $usersModel->getAuthInfo($authUUID);
+                    }
 
-                        ?>
+                    ?>
                     <li class="dropdown dropdown-list">
                         <a href="#" data-toggle="dropdown">
                             <em class="icon-user"></em>
@@ -180,8 +179,15 @@
                                 </div>
                                 <div class="user-block-info">
                                     <span class="user-block-name">Hello, <a
-                                                href="#"> {{ $usersDetails['profile']['first_name'] . " " . $usersDetails['profile']['last_name']}}</a></span>
-                                    <span class="user-block-role">General User</span>
+                                                href="#"> {{ $authInfo['user_details']['profile']['first_name'] . " " . $authInfo['user_details']['profile']['last_name']}}</a></span>
+                                    <span class="user-block-role">
+                                        @foreach($authInfo['user_roles'] as $roles)
+                                            @if (sizeof($roles['name']) > 1)
+                                                {{ $roles['name'] }}/
+                                            @endif
+                                            {{ $roles['name'] }}
+                                        @endforeach
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -199,24 +205,24 @@
                             <span data-localize="sidebar.nav.WIDGETS">My Profile</span>
                         </a>
                     </li>
-                        <li class=" ">
-                            <a href="#users" title="Manage Users" data-toggle="collapse">
-                                <em class="fa fa-users"></em>
-                                <span data-localize="sidebar.nav.DASHBOARD">Manage Users</span>
-                            </a>
-                            <ul id="users" class="nav sidebar-subnav collapse">
-                                <li class=" ">
-                                    <a href="/admin/users/create" title="Create User">
-                                        <span>Create</span>
-                                    </a>
-                                </li>
-                                <li class=" ">
-                                    <a href="#" title="User List">
-                                        <span>List</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class=" ">
+                        <a href="#users" title="Manage Users" data-toggle="collapse">
+                            <em class="fa fa-users"></em>
+                            <span data-localize="sidebar.nav.DASHBOARD">Manage Users</span>
+                        </a>
+                        <ul id="users" class="nav sidebar-subnav collapse">
+                            <li class=" ">
+                                <a href="/admin/users/create" title="Create User">
+                                    <span>Create</span>
+                                </a>
+                            </li>
+                            <li class=" ">
+                                <a href="#" title="User List">
+                                    <span>List</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class=" ">
                         <a href="#settings" title="Settings" data-toggle="collapse">
                             <em class="icon-settings"></em>
@@ -247,7 +253,8 @@
     </section>
     <!-- Page footer-->
     <footer class="footer">
-        <span>Developed by <a href="http://www.sharminshanta.com/" target="_blank">Sharmin Shanta</a>@<?php echo date('Y');?></span>
+        <span>Developed by <a href="http://www.sharminshanta.com/"
+                              target="_blank">Sharmin Shanta</a>@<?php echo date('Y');?></span>
     </footer>
 </div>
 <!-- =============== VENDOR SCRIPTS ===============-->
