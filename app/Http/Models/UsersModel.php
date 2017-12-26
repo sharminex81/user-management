@@ -430,7 +430,7 @@ class UsersModel extends Model
             'user_uuid' => $uuid,
             'user_details' => $this->details($uuid),
             'user_roles' => $this->getRoles($uuid),
-            'user_id' => $this->getId($uuid)
+            'user_id' => $this->getId($uuid),
         ];
 
         if ($user && is_array($user)) {
