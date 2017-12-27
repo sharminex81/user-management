@@ -439,4 +439,25 @@ class UsersModel extends Model
 
         return [];
     }
+
+    /**
+     * @param $uuid
+     * @return bool
+     */
+    public function isAdmin($uuid)
+    {
+        $roles = $this->getRoles($uuid);
+
+        if ($roles && is_array($roles)) {
+            foreach ($roles as $role) {
+                if (array_search('super-administrator', $role)) {
+                    return true;
+                }/*elseif (array_search('general-user', $role)) {
+                    return true;
+                }*/
+            }
+        }
+
+        return false;
+    }
 }

@@ -132,8 +132,8 @@
                         $authUUID = Session::get('authinfo');
                         $usersModel = new \Besofty\Web\Accounts\Models\UsersModel();
                         $authInfo = $usersModel->getAuthInfo($authUUID);
+                        $isAdmin = $usersModel->isAdmin($authInfo['user_uuid']);
                     }
-
                     ?>
                     <li class="dropdown dropdown-list">
                         <a href="#" data-toggle="dropdown">
@@ -180,12 +180,9 @@
                                 <div class="user-block-info">
                                     <span class="user-block-name">Hello, <a
                                                 href="#"> {{ $authInfo['user_details']['profile']['first_name'] . " " . $authInfo['user_details']['profile']['last_name']}}</a></span>
-                                    <span class="user-block-role">
+                                    <span class="">
                                         @foreach($authInfo['user_roles'] as $roles)
-                                            @if (sizeof($roles['name']) > 1)
-                                                {{ $roles['name'] }}/
-                                            @endif
-                                            {{ $roles['name'] }}
+                                            <span class="label label-info">{{ $roles['name'] }}</span>
                                         @endforeach
                                     </span>
                                 </div>
@@ -205,24 +202,26 @@
                             <span data-localize="sidebar.nav.WIDGETS">My Profile</span>
                         </a>
                     </li>
-                    <li class=" ">
-                        <a href="#users" title="Manage Users" data-toggle="collapse">
-                            <em class="fa fa-users"></em>
-                            <span data-localize="sidebar.nav.DASHBOARD">Manage Users</span>
-                        </a>
-                        <ul id="users" class="nav sidebar-subnav collapse">
-                            <li class=" ">
-                                <a href="/admin/users/create" title="Create User">
-                                    <span>Create</span>
-                                </a>
-                            </li>
-                            <li class=" ">
-                                <a href="#" title="User List">
-                                    <span>List</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    @if ($isAdmin)
+                        <li class=" ">
+                            <a href="#users" title="Manage Users" data-toggle="collapse">
+                                <em class="fa fa-users"></em>
+                                <span data-localize="sidebar.nav.DASHBOARD">Manage Users</span>
+                            </a>
+                            <ul id="users" class="nav sidebar-subnav collapse">
+                                <li class=" ">
+                                    <a href="/admin/users/create" title="Create User">
+                                        <span>Create</span>
+                                    </a>
+                                </li>
+                                <li class=" ">
+                                    <a href="#" title="User List">
+                                        <span>List</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
                     <li class=" ">
                         <a href="#settings" title="Settings" data-toggle="collapse">
                             <em class="icon-settings"></em>
