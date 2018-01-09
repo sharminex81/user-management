@@ -78,46 +78,47 @@
             </div>
         </div>
     @else
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Welcome, {{ $authInfo['user_details']['profile']['first_name'] . " " . $authInfo['user_details']['profile']['last_name']}}</h3>
-                    </div>
-                    <div class="panel-body text-center" id="leftQuickActionPanel">
-                        <div class="visible-md visible-lg">
-                            <a class="btn btn-primary btn-margin-top"
-                               href="/profile/general/update"
-                               title="Update your profile"><i class="fa fa-info"></i>
-                                &nbsp; Update Profile</a>
-                            <a class="btn btn-danger btn-margin-top"
-                               href="/profile/security"
-                               title="Change account password">
-                                <i class="fa fa-user-secret"></i> &nbsp; Change Password
-                            </a>
-                            <a class="btn btn-info btn-margin-top"
-                               href="/profile/security"
-                               title="Check security settings">
-                                <i class="fa fa-shield"></i> &nbsp; Review Security Settings
-                            </a>
-                        </div>
-                        <div class="visible-xs visible-sm">
-                            <a class="btn btn-primary btn-block"
-                               href="/profile/general/update"
-                               title="Update your profile">
-                                Update Profile
-                            </a>
-                            <a class="btn btn-danger btn-block"
-                               href="/profile/security/change_password"
-                               title="Change account password">
-                                Change Password
-                            </a>
-                            <a class="btn btn-info btn-block"
-                               href="/settings/security_question"
-                               title="Check security settings">
-                                Review Security Settings
-                            </a>
-                        </div>
+        <div class="content-heading">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <a href="/profile/edit" class="mb-sm btn btn-info btn-outline">Update Profile</a>
+                </div>
+                <div class="btn-group">
+                    <button type="button" data-toggle="modal" data-target="#changeProfilePhoto" class="mb-sm btn btn-info btn-outline">Change Profile Photo
+                    </button>
+                </div>
+                <div class="btn-group">
+                    <a href="/profile/settings" class="mb-sm btn btn-info btn-outline">Profile Settings</a>
+                </div>
+            </div>
+            Dashboard
+            <small data-localize="dashboard.WELCOME">Your dashboard</small>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Login History</div>
+                <div class="panel-body">
+                    <div class="table-responsive table-bordered">
+                        <table class="table">
+                            <thead>
+                            <tr class="text-uppercase table-header">
+                                <th>Time</th>
+                                <th>Location IP</th>
+                                <th>Status</th>
+                                <th>User Agent</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td> <?php echo date('Y-m-d');?></td>
+                                <td>192.168.1.5</td>
+                                <td><span class="label label-primary">Success</span></td>
+                                <td>
+                                    Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

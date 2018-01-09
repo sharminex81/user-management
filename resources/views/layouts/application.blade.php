@@ -252,7 +252,7 @@
     </section>
     <!-- Page footer-->
     <footer class="footer">
-        <span>Developed by <a href="http://www.sharminshanta.com/"
+        <span>Developed by <a href="https://sharminshanta.com/"
                               target="_blank">Sharmin Shanta</a>@<?php echo date('Y');?></span>
     </footer>
 </div>
