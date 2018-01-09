@@ -197,7 +197,7 @@
                     </li>
 
                     <li class="">
-                        <a href="#" title="My Profile">
+                        <a href="/profile" title="My Profile">
                             <em class="icon-user"></em>
                             <span data-localize="sidebar.nav.WIDGETS">My Profile</span>
                         </a>

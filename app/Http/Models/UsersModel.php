@@ -77,7 +77,7 @@ class UsersModel extends Model
     protected static $extendedRelations = [
         "profile",
         "role",
-        "addresses",
+        "address",
     ];
 
     /**
@@ -104,7 +104,7 @@ class UsersModel extends Model
     /**
      * @return \Illuminate\Database\Query\Builder|static
      */
-    public function addresses()
+    public function address()
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return $this->hasMany(AddressesModel::class, 'user_id')->take(10);
@@ -318,6 +318,27 @@ class UsersModel extends Model
     {
         $user = $this->where('uuid', $uuid)
             ->with('profile')
+            ->first();
+
+        if (!$user) {
+            return [];
+        }
+
+        $details = $user->toArray();
+
+        return $details;
+    }
+
+    /**
+     * @param $uuid
+     * @param bool $forceCacheRegeneration
+     * @return array
+     */
+    public function getProfile($uuid, $forceCacheRegeneration = false)
+    {
+        $user = $this->where('uuid', $uuid)
+            ->with('profile')
+            ->with('address')
             ->first();
 
         if (!$user) {

@@ -27,5 +27,7 @@ Route::group(['prefix' => 'signup'], function () {
     Route::post('/process', 'AccessController@signupProcess');
 });
 
+Route::get('/profile', 'Profiles\ProfileController@home')->middleware('auth');
+
 //Logout Route
 Route::get('/logout', 'Auth\LoginController@logout');
