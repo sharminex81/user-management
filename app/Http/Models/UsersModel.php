@@ -395,23 +395,13 @@ class UsersModel extends Model
             ->first();
 
         if (!empty($userAccount)) {
-            if (!$userAccount) {
-                Log::error('Invalid User');
+            $passwordCheck = password_verify($password, $userAccount->password);
+
+            if ($passwordCheck === true) {
+                return $this->details($userAccount->uuid);
             }
 
-            if (password_verify($password, $userAccount->password) === false) {
-                Log::error('Invalid Password');
-            }
-
-            if ($userAccount->is_visible == 0) {
-                Log::error('User is no longer exists');
-            }
-
-            if ($userAccount->status != 1) {
-                Log::error('User has been blocked or suspended');
-            }
-
-            return $this->details($userAccount->uuid);
+            return false;
         }
 
         return false;
